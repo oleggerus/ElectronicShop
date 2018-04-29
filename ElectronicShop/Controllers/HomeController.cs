@@ -22,7 +22,7 @@ namespace ElectronicShop.Controllers
         [HttpPost]
         public ActionResult Login(Employee user, string returnUrl)
         {
-            ShopContext db = new ShopContext();
+            var db = new ShopContext();
 
             var dataItem = db.Employees.First(x => x.Surname == user.Surname
                                                    && x.Name == user.Name

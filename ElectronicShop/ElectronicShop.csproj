@@ -156,9 +156,6 @@
     <Compile Include="Category.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="CategoryItem.cs">
-      <DependentUpon>DBModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Check.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
@@ -289,8 +286,6 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
-    <Content Include="Views\Sale\Create.cshtml" />
-    <Content Include="Views\Sale\Delete.cshtml" />
     <Content Include="Views\Sale\Details.cshtml" />
     <Content Include="Views\Sale\Edit.cshtml" />
     <Content Include="Views\Sale\Index.cshtml" />

@@ -22,7 +22,6 @@ namespace ElectronicShop
             this.Adresses = new HashSet<Adress>();
         }
 
-
         [DisplayName("Місто")]
         public string Name { get; set; }
         public int CityId { get; set; }

@@ -19,31 +19,23 @@ namespace ElectronicShop
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Item()
         {
-            this.CategoryItems = new HashSet<CategoryItem>();
             this.Consignments = new HashSet<Consignment>();
         }
 
         [DisplayName("Модель")]
         public string Model { get; set; }
-
         public int ProducerId { get; set; }
-
         public int ItemId { get; set; }
-
         [DisplayName("Колір")]
         public string Color { get; set; }
-
         [DisplayName("Матеріал")]
         public string Material { get; set; }
-
-        [DisplayName("Додаткова інформація")]
+        [DisplayName("Опис товару")]
         public string Description { get; set; }
-        
-        [DisplayName("Дата релізу")]
         public Nullable<int> ReleaseDate { get; set; }
+        public Nullable<int> CategoryId { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CategoryItem> CategoryItems { get; set; }
+        public virtual Category Category { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Consignment> Consignments { get; set; }
         public virtual Producer Producer { get; set; }

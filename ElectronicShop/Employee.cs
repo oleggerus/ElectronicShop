@@ -24,14 +24,11 @@ namespace ElectronicShop
         }
         [DisplayName("Прізвище")]
         public string Surname { get; set; }
-
         [DisplayName("Ім'я")]
         public string Name { get; set; }
-
         public System.DateTime EnterDate { get; set; }
+        [DisplayName("Телефон")]
         public string PhoneNumber { get; set; }
-
-
         [DisplayName("Пароль")]
         public string Password { get; set; }
         public int EmployeeId { get; set; }

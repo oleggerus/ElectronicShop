@@ -19,15 +19,13 @@ namespace ElectronicShop
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Category()
         {
-            this.CategoryItems = new HashSet<CategoryItem>();
+            this.Items = new HashSet<Item>();
         }
-
-
         [DisplayName("Категорія")]
         public string Name { get; set; }
         public int CategoryId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CategoryItem> CategoryItems { get; set; }
+        public virtual ICollection<Item> Items { get; set; }
     }
 }

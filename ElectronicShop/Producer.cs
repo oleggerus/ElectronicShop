@@ -21,11 +21,10 @@ namespace ElectronicShop
         {
             this.Items = new HashSet<Item>();
         }
-
-
         [DisplayName("Виробник")]
         public string Name { get; set; }
         public int ProducerId { get; set; }
+        [DisplayName("Країна виробника")]
         public string Country { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

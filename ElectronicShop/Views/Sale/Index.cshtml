@@ -4,19 +4,26 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Оформлення продажу</h2>
+<h1>@ViewBag.ErrorMessage</h1>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
+
     <div class="form-group">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
         <table class="table">
             <tr>
                 <th>
-                    @Html.Label("Кількість ")
+                    @Html.DisplayNameFor(model => model.Consignment.Item.Category.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Consignment.Item.Producer.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Consignment.Item.Model)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Price)
@@ -25,11 +32,9 @@
                     @Html.DisplayNameFor(model => model.Quantity)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Consignment.ConsignmentId)
+                    @Html.Label("Кількість")
                 </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Storehouse.StorehouseId)
-                </th>
+
                 <th></th>
             </tr>
 
@@ -37,7 +42,13 @@
             {
                 <tr>
                     <td>
-                        @Html.Editor("quantities")
+                        @Html.DisplayFor(modelItem => item.Consignment.Item.Category.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Consignment.Item.Producer.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Consignment.Item.Model)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Price)
@@ -46,20 +57,19 @@
                         @Html.DisplayFor(modelItem => item.Quantity)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Consignment.ConsignmentId)
+                        @Html.Editor("quantities", new { @Value = "" })
                     </td>
-                   <td>
-                        @Html.ActionLink("Edit", "Edit", new { id = item.StorehouseItemId }) |
-                        @Html.ActionLink("Details", "Details", new { id = item.StorehouseItemId }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = item.StorehouseItemId })
+                    <td>
+                        @Html.ActionLink("Запит на склад", "Edit", new { id = item.StorehouseItemId }) |
+                        @Html.ActionLink("Деталі товару", "Details", new { id = item.StorehouseItemId })
                     </td>
                 </tr>
             }
 
         </table>
 
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Index" class="btn btn-default" />
+        <div  style="position: fixed; top: 90%; ">
+            <input type="submit" value="Зберегти" style="margin-left: 1200px; background-color: blue; width: 100px; font-size: 18px; color: chartreuse" class="btn btn-default" />
         </div>
     </div>
 }

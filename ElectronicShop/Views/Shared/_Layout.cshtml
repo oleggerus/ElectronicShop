@@ -22,11 +22,10 @@
                 <ul class="nav navbar-nav">
                     @if (User.IsInRole("Seller") )
                     {
-                        <li>@Html.ActionLink("My cabinet", "Index", "Home")</li>
+                        <li>@Html.ActionLink("Оформлення продажі", "Index", "Sale")</li>
                     }
 
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>                
-                </ul>
+                    </ul>
                 <ul class="nav navbar-nav navbar-right">
                     @if (!User.Identity.IsAuthenticated)
                     {

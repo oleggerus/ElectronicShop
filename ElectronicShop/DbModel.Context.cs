@@ -27,7 +27,6 @@ namespace ElectronicShop
     
         public virtual DbSet<Adress> Adresses { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
-        public virtual DbSet<CategoryItem> CategoryItems { get; set; }
         public virtual DbSet<Check> Checks { get; set; }
         public virtual DbSet<City> Cities { get; set; }
         public virtual DbSet<Consignment> Consignments { get; set; }

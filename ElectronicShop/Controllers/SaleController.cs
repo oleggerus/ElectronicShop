@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ElectronicShop;
+using WebGrease.Css.Extensions;
 
 namespace ElectronicShop.Controllers
 {
@@ -17,7 +19,8 @@ namespace ElectronicShop.Controllers
         // GET: Sale
         public ActionResult Index()
         {
-            var storehouseItems = db.StorehouseItems.Include(s => s.Consignment).Include(s => s.Storehouse);
+            //  var storehouseItems = db.StorehouseItems.Include(s => s.Consignment).Include(s => s.Storehouse).OrderBy(x => x.Consignment.Item.CategoryId);
+            var storehouseItems = db.StorehouseItems.Include(s => s.Consignment).Include(s => s.Storehouse).OrderBy(x => x.Consignment.Item.CategoryId);
             return View(storehouseItems.ToList());
         }
 
@@ -27,9 +30,9 @@ namespace ElectronicShop.Controllers
             var idEmp = Convert.ToInt32(HttpContext.User.Identity.Name);
             var items = quantities.ToArray();
             int counter = 0;
-            var storehouseItems = db.StorehouseItems.Include(s => s.Consignment).Include(s => s.Storehouse).ToArray();
+            var storehouseItems = db.StorehouseItems.Include(s => s.Consignment).Include(s => s.Storehouse).Where().ToArray();
             var theDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, DateTime.Today.Hour, DateTime.Today.Minute, DateTime.Today.Second); ;
-
+            int? total = 0;
             var check = new Check
             {
                 EmployeeId = idEmp,
@@ -51,17 +54,23 @@ namespace ElectronicShop.Controllers
                             SaleDate = theDate,
                             CheckId = check.CheckId
                         };
+                        total += Convert.ToInt32(storehouseItems[counter].Price) *amount;
                         db.Sales.Add(sale);
                     }
                 }
-                else
+                else if (items[counter] != "" && items[counter] != "0")
                 {
-                  
+                    items[counter] = "";
+                    ViewBag.ErrorMessage = "Некоректні дані";
+                    return View(storehouseItems);
+
                 }
 
                 counter++;
             }
 
+            check.TotalPrice = (double)total;
+            db.Checks.AddOrUpdate(check);
             db.SaveChanges();
             return RedirectToAction("Index", "Sale");
         }
@@ -81,33 +90,7 @@ namespace ElectronicShop.Controllers
             return View(storehouseItem);
         }
 
-        // GET: Sale/Create
-        public ActionResult Create()
-        {
-            ViewBag.ConsignmentId = new SelectList(db.Consignments, "ConsignmentId", "ConsignmentId");
-            ViewBag.StorehouseId = new SelectList(db.Storehouses, "StorehouseId", "StorehouseId");
-            return View();
-        }
-
-        // POST: Sale/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Price,Quantity,StorehouseId,StorehouseItemId,ConsignmentId")] StorehouseItem storehouseItem)
-        {
-            if (ModelState.IsValid)
-            {
-                db.StorehouseItems.Add(storehouseItem);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            ViewBag.ConsignmentId = new SelectList(db.Consignments, "ConsignmentId", "ConsignmentId", storehouseItem.ConsignmentId);
-            ViewBag.StorehouseId = new SelectList(db.Storehouses, "StorehouseId", "StorehouseId", storehouseItem.StorehouseId);
-            return View(storehouseItem);
-        }
-
+       
         // GET: Sale/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -130,7 +113,7 @@ namespace ElectronicShop.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Price,Quantity,StorehouseId,StorehouseItemId,ConsignmentId")] StorehouseItem storehouseItem)
+        public ActionResult Edit([Bind(Include = "Price,Quantity,StorehouseId,StorehouseItemId,ConsignmentId")] StorehouseItem storehouseItem, int quantities)
         {
             if (ModelState.IsValid)
             {
@@ -138,36 +121,12 @@ namespace ElectronicShop.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+
             ViewBag.ConsignmentId = new SelectList(db.Consignments, "ConsignmentId", "ConsignmentId", storehouseItem.ConsignmentId);
             ViewBag.StorehouseId = new SelectList(db.Storehouses, "StorehouseId", "StorehouseId", storehouseItem.StorehouseId);
             return View(storehouseItem);
         }
 
-        // GET: Sale/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            StorehouseItem storehouseItem = db.StorehouseItems.Find(id);
-            if (storehouseItem == null)
-            {
-                return HttpNotFound();
-            }
-            return View(storehouseItem);
-        }
-
-        // POST: Sale/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            StorehouseItem storehouseItem = db.StorehouseItems.Find(id);
-            db.StorehouseItems.Remove(storehouseItem);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
 
         protected override void Dispose(bool disposing)
         {
