@@ -62,7 +62,11 @@
                     <td>
                         @if (User.IsInRole("Seller") || User.IsInRole("Manager"))
                         {
-                            @Html.ActionLink("Запит на склад", "Edit", new { id = item.StorehouseItemId })  |
+                            @Html.ActionLink("Запит на склад |", "CreateRequest", new { id = item.StorehouseItemId })  
+                        }
+                        @if (User.IsInRole("Manager"))
+                        {
+                            @Html.ActionLink("Змінити дані |", "Edit", new { id = item.StorehouseItemId })  
                         }
                         @Html.ActionLink("Деталі товару", "Details", new { id = item.StorehouseItemId })
                     </td>

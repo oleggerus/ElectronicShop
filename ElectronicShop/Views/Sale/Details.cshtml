@@ -58,7 +58,7 @@
 @if (User.IsInRole("Seller") || User.IsInRole("Manager"))
 {
     <p>
-        @Html.ActionLink("Замовити товар у магазин", "Edit", new { id = Model.StorehouseItemId }) |
+        @Html.ActionLink("Замовити товар у магазин", "CreateRequest", new { id = Model.StorehouseItemId }) |
 
     </p>
 }
