@@ -13,10 +13,10 @@ namespace ElectronicShop
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class DbContext : DbContext
+    public partial class ShopContext : DbContext
     {
-        public DbContext()
-            : base("name=DbContext")
+        public ShopContext()
+            : base("name=ShopContext")
         {
         }
     

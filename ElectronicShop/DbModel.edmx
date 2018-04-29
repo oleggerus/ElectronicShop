@@ -1007,7 +1007,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="DbContext" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="ShopContext" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Adresses" EntityType="Self.Adress" />
           <EntitySet Name="Categories" EntityType="Self.Category" />
           <EntitySet Name="CategoryItems" EntityType="Self.CategoryItem" />
@@ -1115,7 +1115,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="ElectronicShopModelStoreContainer" CdmEntityContainer="DbContext">
+        <EntityContainerMapping StorageEntityContainer="ElectronicShopModelStoreContainer" CdmEntityContainer="ShopContext">
           <EntitySetMapping Name="Adresses">
             <EntityTypeMapping TypeName="ElectronicShopModel.Adress">
               <MappingFragment StoreEntitySet="Adresses">

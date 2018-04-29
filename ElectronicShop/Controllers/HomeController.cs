@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 
 namespace ElectronicShop.Controllers
 {
@@ -13,18 +14,43 @@ namespace ElectronicShop.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult Login()
         {
-            ViewBag.Message = "Your application description page.";
-
             return View();
         }
 
-        public ActionResult Contact()
+        [HttpPost]
+        public ActionResult Login(Employee user, string returnUrl)
         {
-            ViewBag.Message = "Your contact page.";
+            ShopContext db = new ShopContext();
 
+            var dataItem = db.Employees.First(x => x.Surname == user.Surname
+                                                   && x.Name == user.Name
+                                                   && x.Password == user.Password);
+            if (dataItem != null)
+            {
+                FormsAuthentication.SetAuthCookie((dataItem.EmployeeId).ToString(), false);
+                if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
+                    && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
+                {
+                    return Redirect(returnUrl);
+                }
+
+                else
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+
+            ModelState.AddModelError("", "Invalid data or password");
             return View();
+        }
+
+        [Authorize]
+        public ActionResult SignOut()
+        {
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Login", "Home");
         }
     }
 }
