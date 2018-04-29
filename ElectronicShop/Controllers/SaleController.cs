@@ -22,13 +22,50 @@ namespace ElectronicShop.Controllers
         }
 
         [HttpPost]
-        public ActionResult Index(IEnumerable<string> quantities,  IEnumerable<int> count)
+        public ActionResult Index(IEnumerable<string> quantities, IEnumerable<int> count)
         {
             var idEmp = Convert.ToInt32(HttpContext.User.Identity.Name);
+            var items = quantities.ToArray();
+            int counter = 0;
+            var storehouseItems = db.StorehouseItems.Include(s => s.Consignment).Include(s => s.Storehouse).ToArray();
+            var theDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, DateTime.Today.Hour, DateTime.Today.Minute, DateTime.Today.Second); ;
 
-            return View();
+            var check = new Check
+            {
+                EmployeeId = idEmp,
+                CheckDate = new DateTime().ToLocalTime(),
+                TotalPrice = 500
+            };
+            db.Checks.Add(check);
+
+            foreach (var item in items)
+            {
+                if (int.TryParse(items[counter], out var amount))
+                {
+                    if (amount > 0)
+                    {
+                        var sale = new Sale
+                        {
+                            Quantity = amount,
+                            StorehouseItemId = storehouseItems[counter].StorehouseItemId,
+                            SaleDate = theDate,
+                            CheckId = check.CheckId
+                        };
+                        db.Sales.Add(sale);
+                    }
+                }
+                else
+                {
+                  
+                }
+
+                counter++;
+            }
+
+            db.SaveChanges();
+            return RedirectToAction("Index", "Sale");
         }
-        
+
         // GET: Sale/Details/5
         public ActionResult Details(int? id)
         {
