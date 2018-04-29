@@ -19,8 +19,19 @@ namespace ElectronicShop.Controllers
         // GET: Sale
         public ActionResult Index()
         {
-            //  var storehouseItems = db.StorehouseItems.Include(s => s.Consignment).Include(s => s.Storehouse).OrderBy(x => x.Consignment.Item.CategoryId);
-            var storehouseItems = db.StorehouseItems.Include(s => s.Consignment).Include(s => s.Storehouse).OrderBy(x => x.Consignment.Item.CategoryId);
+            var idEmp = Convert.ToInt32(HttpContext.User.Identity.Name);
+
+            var storehouseItems = (from s in db.StorehouseItems
+                                   join c in db.Consignments on s.ConsignmentId equals c.ConsignmentId
+                                   join st in db.Storehouses on s.StorehouseId equals st.StorehouseId
+                                   join stEmp in db.StorehouseEmployees on st.StorehouseId equals stEmp.StorehouseId
+                                   join emp in db.Employees on stEmp.EmployeeId equals emp.EmployeeId
+                                   where emp.EmployeeId == idEmp
+                                   orderby s.Consignment.Item.CategoryId
+                                   select s);
+
+
+
             return View(storehouseItems.ToList());
         }
 
@@ -30,7 +41,15 @@ namespace ElectronicShop.Controllers
             var idEmp = Convert.ToInt32(HttpContext.User.Identity.Name);
             var items = quantities.ToArray();
             int counter = 0;
-            var storehouseItems = db.StorehouseItems.Include(s => s.Consignment).Include(s => s.Storehouse).Where().ToArray();
+            var storehouseItems = (from s in db.StorehouseItems
+                                   join c in db.Consignments on s.ConsignmentId equals c.ConsignmentId
+                                   join st in db.Storehouses on s.StorehouseId equals st.StorehouseId
+                                   join stEmp in db.StorehouseEmployees on st.StorehouseId equals stEmp.StorehouseId
+                                   join emp in db.Employees on stEmp.EmployeeId equals emp.EmployeeId
+                                   where emp.EmployeeId == idEmp
+                                   orderby s.Consignment.Item.CategoryId
+                                   select s).ToArray();
+
             var theDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, DateTime.Today.Hour, DateTime.Today.Minute, DateTime.Today.Second); ;
             int? total = 0;
             var check = new Check
@@ -54,7 +73,7 @@ namespace ElectronicShop.Controllers
                             SaleDate = theDate,
                             CheckId = check.CheckId
                         };
-                        total += Convert.ToInt32(storehouseItems[counter].Price) *amount;
+                        total += Convert.ToInt32(storehouseItems[counter].Price) * amount;
                         db.Sales.Add(sale);
                     }
                 }
@@ -90,7 +109,7 @@ namespace ElectronicShop.Controllers
             return View(storehouseItem);
         }
 
-       
+
         // GET: Sale/Edit/5
         public ActionResult Edit(int? id)
         {
