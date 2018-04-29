@@ -21,6 +21,14 @@ namespace ElectronicShop.Controllers
             return View(storehouseItems.ToList());
         }
 
+        [HttpPost]
+        public ActionResult Index(IEnumerable<string> quantities,  IEnumerable<int> count)
+        {
+            var idEmp = Convert.ToInt32(HttpContext.User.Identity.Name);
+
+            return View();
+        }
+        
         // GET: Sale/Details/5
         public ActionResult Details(int? id)
         {
