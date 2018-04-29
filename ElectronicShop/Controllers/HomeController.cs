@@ -42,7 +42,7 @@ namespace ElectronicShop.Controllers
                 }
             }
 
-            ModelState.AddModelError("", "Invalid data or password");
+            ModelState.AddModelError("", "Некоректні дані. Спробуйте ще раз.");
             return View();
         }
 

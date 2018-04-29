@@ -1,0 +1,51 @@
+﻿@model IEnumerable<ElectronicShop.StorehouseItem>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Quantity)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Consignment.ConsignmentId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Storehouse.StorehouseId)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Price)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Quantity)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Consignment.ConsignmentId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Storehouse.StorehouseId)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.StorehouseItemId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.StorehouseItemId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.StorehouseItemId })
+        </td>
+    </tr>
+}
+
+</table>

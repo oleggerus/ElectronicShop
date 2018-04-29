@@ -1,0 +1,50 @@
+﻿@model ElectronicShop.StorehouseItem
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>StorehouseItem</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Quantity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Quantity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Consignment.ConsignmentId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Consignment.ConsignmentId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Storehouse.StorehouseId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Storehouse.StorehouseId)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.StorehouseItemId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
