@@ -5,7 +5,7 @@
 }
 
 <h2>Оформлення продажу</h2>
-<h1>@ViewBag.ErrorMessage</h1>
+<h3 style="color: red">@ViewBag.ErrorMessage</h3>
 
 @using (Html.BeginForm())
 {
@@ -60,7 +60,10 @@
                         @Html.Editor("quantities", new { @Value = "" })
                     </td>
                     <td>
-                        @Html.ActionLink("Запит на склад", "Edit", new { id = item.StorehouseItemId }) |
+                        @if (User.IsInRole("Seller") || User.IsInRole("Manager"))
+                        {
+                            @Html.ActionLink("Запит на склад", "Edit", new { id = item.StorehouseItemId })  |
+                        }
                         @Html.ActionLink("Деталі товару", "Details", new { id = item.StorehouseItemId })
                     </td>
                 </tr>
@@ -68,7 +71,7 @@
 
         </table>
 
-        <div  style="position: fixed; top: 90%; ">
+        <div style="position: fixed; top: 90%; ">
             <input type="submit" value="Зберегти" style="margin-left: 1200px; background-color: blue; width: 100px; font-size: 18px; color: chartreuse" class="btn btn-default" />
         </div>
     </div>

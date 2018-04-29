@@ -30,8 +30,6 @@ namespace ElectronicShop.Controllers
                                    orderby s.Consignment.Item.CategoryId
                                    select s);
 
-
-
             return View(storehouseItems.ToList());
         }
 
@@ -50,13 +48,15 @@ namespace ElectronicShop.Controllers
                                    orderby s.Consignment.Item.CategoryId
                                    select s).ToArray();
 
+            
+
             var theDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, DateTime.Today.Hour, DateTime.Today.Minute, DateTime.Today.Second); ;
             int? total = 0;
             var check = new Check
             {
                 EmployeeId = idEmp,
                 CheckDate = new DateTime().ToLocalTime(),
-                TotalPrice = 500
+                TotalPrice = 1
             };
             db.Checks.Add(check);
 
@@ -66,6 +66,22 @@ namespace ElectronicShop.Controllers
                 {
                     if (amount > 0)
                     {
+                        //var discounts = (from d in db.DiscountToItems
+                        //                 join ds in db.Discounts on d.DiscountId equals ds.DiscountId
+                        //                 where storehouseItems[counter].StorehouseItemId == d.StorehouseItemId
+                        //                 select ds.DiscountValue);
+
+                        //double sum_disc = 0;
+                        //discounts.ForEach(x => sum_disc += x);
+                        //foreach (var discount in discounts)
+                        //{
+                        //    sum_disc += discount;
+                        //    if (sum_disc > 50)
+                        //    {
+                        //        sum_disc = 50; break;
+                        //    }
+                        //}
+
                         var sale = new Sale
                         {
                             Quantity = amount,
@@ -73,8 +89,22 @@ namespace ElectronicShop.Controllers
                             SaleDate = theDate,
                             CheckId = check.CheckId
                         };
-                        total += Convert.ToInt32(storehouseItems[counter].Price) * amount;
+                        total += Convert.ToInt32(storehouseItems[counter].Price) * amount; //-Convert.ToInt32(storehouseItems[counter].Price) * amount/100*(int)sum_disc;
                         db.Sales.Add(sale);
+                        var storehouseItem = db.StorehouseItems
+                            .FirstOrDefault(s => s.StorehouseItemId == sale.StorehouseItemId);
+                        if (storehouseItem.Quantity >= sale.Quantity)
+                        {
+                            storehouseItem.Quantity -= sale.Quantity;
+                        }
+                        else
+                        {
+                            var error = "Для " + storehouseItem.Consignment.Item.Producer.Name + " " +
+                                        storehouseItem.Consignment.Item.Model + " не вистачає товару";
+
+                            ViewBag.ErrorMessage = error;
+                            return View(storehouseItems);
+                        }
                     }
                 }
                 else if (items[counter] != "" && items[counter] != "0")
@@ -82,7 +112,6 @@ namespace ElectronicShop.Controllers
                     items[counter] = "";
                     ViewBag.ErrorMessage = "Некоректні дані";
                     return View(storehouseItems);
-
                 }
 
                 counter++;
