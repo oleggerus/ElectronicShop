@@ -20,6 +20,7 @@ namespace ElectronicShop.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult Login(Employee user, string returnUrl)
         {
             var db = new ShopContext();

@@ -16,7 +16,7 @@ namespace ElectronicShop.Controllers
     {
         private ShopContext db = new ShopContext();
 
-        // GET: Sale
+        [Authorize]
         public ActionResult Index()
         {
             var idEmp = Convert.ToInt32(HttpContext.User.Identity.Name);
@@ -166,7 +166,6 @@ namespace ElectronicShop.Controllers
         }
 
 
-        // GET: Sale/Edit/5
         public ActionResult CreateRequest(int? id)
         {
             if (id == null)
@@ -211,7 +210,7 @@ namespace ElectronicShop.Controllers
 
         }
 
-
+        [Authorize(Roles = "Manager")]
         public ActionResult Edit(int? id)
         {
             if (id == null)

@@ -32,6 +32,7 @@ namespace ElectronicShop
         public string Material { get; set; }
         [DisplayName("Опис товару")]
         public string Description { get; set; }
+        [DisplayName("Рік випуску моделі")]
         public Nullable<int> ReleaseDate { get; set; }
         public Nullable<int> CategoryId { get; set; }
     
