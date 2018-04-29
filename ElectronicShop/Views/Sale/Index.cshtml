@@ -4,8 +4,9 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Оформлення продажу</h2>
+<h3>Оформлення продажу</h3>
 <h3 style="color: red">@ViewBag.ErrorMessage</h3>
+<h3 style="color: chartreuse">@ViewBag.Message</h3>
 
 @using (Html.BeginForm())
 {
@@ -13,6 +14,11 @@
 
     <div class="form-group">
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.Label("Прізвище покупця")
+        @Html.Editor("surname", new { @Value = "" })
+        @Html.Label("Ім'я покупця")
+        @Html.Editor("name", new { @Value = "" })
 
         <table class="table">
             <tr>
@@ -57,16 +63,16 @@
                         @Html.DisplayFor(modelItem => item.Quantity)
                     </td>
                     <td>
-                        @Html.Editor("quantities", new { @Value = "" })
+                        @Html.TextBox("quantities")
                     </td>
                     <td>
                         @if (User.IsInRole("Seller") || User.IsInRole("Manager"))
                         {
-                            @Html.ActionLink("Запит на склад |", "CreateRequest", new { id = item.StorehouseItemId })  
+                            @Html.ActionLink("Запит на склад |", "CreateRequest", new { id = item.StorehouseItemId })
                         }
                         @if (User.IsInRole("Manager"))
                         {
-                            @Html.ActionLink("Змінити дані |", "Edit", new { id = item.StorehouseItemId })  
+                            @Html.ActionLink("Змінити дані |", "Edit", new { id = item.StorehouseItemId })
                         }
                         @Html.ActionLink("Деталі товару", "Details", new { id = item.StorehouseItemId })
                     </td>

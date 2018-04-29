@@ -34,8 +34,11 @@ namespace ElectronicShop.Controllers
         }
 
         [HttpPost]
-        public ActionResult Index(IEnumerable<string> quantities, IEnumerable<int> count)
+        public ActionResult Index(List<string> quantities, IEnumerable<int> count, string name, string surname)
         {
+           var customer = db.Customers.FirstOrDefault(x => x.Name == name
+                                                                 && x.Surname == surname);
+
             var idEmp = Convert.ToInt32(HttpContext.User.Identity.Name);
             var items = quantities.ToArray();
             int counter = 0;
@@ -51,12 +54,14 @@ namespace ElectronicShop.Controllers
 
 
             var theDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, DateTime.Today.Hour, DateTime.Today.Minute, DateTime.Today.Second); ;
-            int? total = 0;
+            double total = 0;
+
             var check = new Check
             {
                 EmployeeId = idEmp,
                 CheckDate = new DateTime().ToLocalTime(),
-                TotalPrice = 1
+                TotalPrice = 1,
+                Customer = customer
             };
             db.Checks.Add(check);
 
@@ -102,6 +107,9 @@ namespace ElectronicShop.Controllers
                             var error = "Для " + storehouseItem.Consignment.Item.Producer.Name + " " +
                                         storehouseItem.Consignment.Item.Model + " не вистачає товару";
 
+                            items[0] = "";
+                            quantities.ToArray();
+                            quantities[0] = "";
                             ViewBag.ErrorMessage = error;
                             return View(storehouseItems);
                         }
@@ -109,18 +117,37 @@ namespace ElectronicShop.Controllers
                 }
                 else if (items[counter] != "" && items[counter] != "0")
                 {
-                    items[counter] = "";
+                    items[0] = "";
+                    quantities.ToArray();
+                    quantities[0] = "";
                     ViewBag.ErrorMessage = "Некоректні дані";
                     return View(storehouseItems);
                 }
 
                 counter++;
             }
+            
+            if (total == 0)
+            {
+                ViewBag.ErrorMessage = "Товари не вибрано";
+                return View(storehouseItems);
+            }
 
-            check.TotalPrice = (double)total;
+            if (customer != null && customer.CustomerDiscount.DiscountValue >0)
+            {
+                check.TotalPrice = (double)total - (double)total / 100 * customer.CustomerDiscount.DiscountValue;
+            }
+            else
+            {
+                check.TotalPrice = (double) total;
+            }
             db.Checks.AddOrUpdate(check);
             db.SaveChanges();
-            return RedirectToAction("Index", "Sale");
+            ViewBag.Message = "Покупка успішно здійснена";
+            items[0] = "";
+            quantities.ToArray();
+            quantities[0] = "";
+            return View(storehouseItems);
         }
 
         // GET: Sale/Details/5
@@ -161,18 +188,27 @@ namespace ElectronicShop.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateRequest([Bind(Include = "Price,Quantity,StorehouseId,StorehouseItemId,ConsignmentId")] StorehouseItem storehouseItem, int quantities)
+        public void CreateRequest([Bind(Include = "Price,Quantity,StorehouseId,StorehouseItemId,ConsignmentId")] StorehouseItem storehouseItem, int quantities)
         {
-            if (ModelState.IsValid)
+            var st = db.StorehouseItems.FirstOrDefault(x => x.StorehouseItemId == storehouseItem.StorehouseItemId);
+            if (st.Storehouse.IsShop == true)
             {
-                db.Entry(storehouseItem).State = EntityState.Modified;
+                //var st = db.StorehouseItems.Where(x => x.Consignment.ItemId == storehouseItem.Consignment.ItemId)
+                //    .Where(x => x.Storehouse.IsShop == false);
+                //var max = st.Max(x => x.Quantity);
+
+                //if (max >= quantities)
+                //{
+                //}
+
+
+                st.Quantity += quantities;
+                db.StorehouseItems.AddOrUpdate(st);
                 db.SaveChanges();
-                return RedirectToAction("Index");
             }
 
-            ViewBag.ConsignmentId = new SelectList(db.Consignments, "ConsignmentId", "ConsignmentId", storehouseItem.ConsignmentId);
-            ViewBag.StorehouseId = new SelectList(db.Storehouses, "StorehouseId", "StorehouseId", storehouseItem.StorehouseId);
-            return View(storehouseItem);
+            RedirectToAction("Index", "Home");
+
         }
 
 

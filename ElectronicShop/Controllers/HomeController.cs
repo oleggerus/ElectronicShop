@@ -24,22 +24,13 @@ namespace ElectronicShop.Controllers
         {
             var db = new ShopContext();
 
-            var dataItem = db.Employees.First(x => x.Surname == user.Surname
+            var dataItem = db.Employees.FirstOrDefault(x => x.Surname == user.Surname
                                                    && x.Name == user.Name
                                                    && x.Password == user.Password);
             if (dataItem != null)
             {
                 FormsAuthentication.SetAuthCookie((dataItem.EmployeeId).ToString(), false);
-                if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
-                    && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
-                {
-                    return Redirect(returnUrl);
-                }
-
-                else
-                {
-                    return RedirectToAction("Index");
-                }
+                return RedirectToAction("Index", "Home");
             }
 
             ModelState.AddModelError("", "Некоректні дані. Спробуйте ще раз.");

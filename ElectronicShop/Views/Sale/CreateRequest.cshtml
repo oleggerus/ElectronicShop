@@ -51,6 +51,7 @@
 
 
         @Html.HiddenFor(model => model.StorehouseItemId)
+        @Html.HiddenFor(model => model.StorehouseId)
 
         <br>
         <div class="form-group">
@@ -62,7 +63,7 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Повернутися до сторінки продажу", "Index", "Sale")
 </div>
 
 @section Scripts {
