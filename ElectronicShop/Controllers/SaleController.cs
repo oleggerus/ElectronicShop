@@ -17,8 +17,15 @@ namespace ElectronicShop.Controllers
         private ShopContext db = new ShopContext();
 
         [Authorize]
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder, string searchString)
         {
+            ViewBag.CategorySortParm = String.IsNullOrEmpty(sortOrder) ? "Category_desc" : "";
+            ViewBag.ProducerSortParm = sortOrder == "Producer" ? "Producer_desc" : "Producer";
+            ViewBag.ModelSortParm = sortOrder == "Model" ? "Model_desc" : "Model";
+            ViewBag.PriceSortParm = sortOrder == "Price" ? "Price_desc" : "Price";
+            ViewBag.QuantitySortParm = sortOrder == "Quantity" ? "Quantity_desc" : "Quantity";
+            ViewBag.ReservSortParm = sortOrder == "Reserv" ? "Reserv_desc" : "Reserv";
+
             var idEmp = Convert.ToInt32(HttpContext.User.Identity.Name);
 
             var storehouseItems = (from s in db.StorehouseItems
@@ -27,14 +34,50 @@ namespace ElectronicShop.Controllers
                                    join stEmp in db.StorehouseEmployees on st.StorehouseId equals stEmp.StorehouseId
                                    join emp in db.Employees on stEmp.EmployeeId equals emp.EmployeeId
                                    where emp.EmployeeId == idEmp
-                                   orderby s.Consignment.Item.CategoryId
                                    select s);
-
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                storehouseItems = storehouseItems.Where(s => s.Consignment.Item.Producer.Name.Contains(searchString)
+                                               || s.Consignment.Item.Model.Contains(searchString));
+            }
+            switch (sortOrder)
+            {
+                case "Category_desc":
+                    storehouseItems = storehouseItems.OrderByDescending(s => s.Consignment.Item.Category.Name);
+                    break;
+                case "Producer":
+                    storehouseItems = storehouseItems.OrderBy(s => s.Consignment.Item.Producer.Name);
+                    break;
+                case "Producer_desc":
+                    storehouseItems = storehouseItems.OrderByDescending(s => s.Consignment.Item.Producer.Name);
+                    break;
+                case "Price":
+                    storehouseItems = storehouseItems.OrderBy(s => s.Price);
+                    break;
+                case "Price_desc":
+                    storehouseItems = storehouseItems.OrderByDescending(s => s.Price);
+                    break;
+                case "Model":
+                    storehouseItems = storehouseItems.OrderBy(s => s.Consignment.Item.Model);
+                    break;
+                case "Model_desc":
+                    storehouseItems = storehouseItems.OrderByDescending(s => s.Consignment.Item.Model);
+                    break;
+                case "Quantity":
+                    storehouseItems = storehouseItems.OrderBy(s => s.Quantity);
+                    break;
+                case "Quantity_desc":
+                    storehouseItems = storehouseItems.OrderByDescending(s => s.Quantity);
+                    break;
+                default:
+                    storehouseItems = storehouseItems.OrderBy(s => s.Consignment.Item.Category.Name);
+                    break;
+            }
             return View(storehouseItems.ToList());
         }
 
         [HttpPost]
-        public ActionResult Index(List<string> quantities, IEnumerable<int> count, string name, string surname)
+        public ActionResult Index(List<string> quantities, string name, string surname)
         {
            var customer = db.Customers.FirstOrDefault(x => x.Name == name
                                                                  && x.Surname == surname);
