@@ -1,0 +1,68 @@
+﻿@model IEnumerable<ElectronicShop.Employee>
+
+
+
+<h2>Управління працівниками</h2>
+
+<p>
+    @Html.ActionLink("Додати нового", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Surname)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EnterDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Contract.Salary)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Contract.Bonuses)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EmployeeRole.RoleName)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Surname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EnterDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Contract.Salary)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Contract.Bonuses)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmployeeRole.RoleName)
+            </td>
+            <td>
+                @Html.ActionLink("Змінити", "Edit", new { id = item.EmployeeId }) |
+                @Html.ActionLink("Деталі", "Details", new { id = item.EmployeeId }) |
+                @Html.ActionLink("Видалити", "Delete", new { id = item.EmployeeId })
+            </td>
+        </tr>
+    }
+
+</table>

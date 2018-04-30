@@ -1,0 +1,68 @@
+﻿@model ElectronicShop.StorehouseItem
+
+@{
+    ViewBag.Title = "Деталі";
+}
+
+<h2>Деталі</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Consignment.Item.Color)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Consignment.Item.Color)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Consignment.Item.Material)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Consignment.Item.Material)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Consignment.Item.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Consignment.Item.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Consignment.Item.ReleaseDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Consignment.Item.ReleaseDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Consignment.ArriveDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Consignment.ArriveDate)
+        </dd>
+
+    </dl>
+</div>
+@if (User.IsInRole("Seller") || User.IsInRole("Manager"))
+{
+    <p>
+        @Html.ActionLink("Замовити товар у магазин", "CreateRequest", new { id = Model.StorehouseItemId }) |
+
+    </p>
+}

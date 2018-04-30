@@ -1,0 +1,98 @@
+﻿@model IEnumerable<ElectronicShop.StorehouseItem>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h3>Оформлення продажу</h3>
+<h3 style="color: red">@ViewBag.ErrorMessage</h3>
+<h3 style="color: chartreuse">@ViewBag.Message</h3>
+@using (Html.BeginForm("Index", "Sale", FormMethod.Get))
+{
+    @Html.Label("Шукати за виробником чи моделлю " + "    ")
+    <br>
+    @Html.TextBox("SearchString")
+    <input type="submit" value="Пошук" />
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <br>
+        @Html.Label("Прізвище покупця")
+        @Html.Editor("surname", new { @Value = "" })
+        <br>
+        @Html.Label("Ім'я покупця")
+        <span style="margin-left: 41px"> @Html.Editor("name", new { @Value = "" })</span>
+
+        <br><br>
+
+
+        <table class="table">
+            <tr>
+                <th style="color: mediumblue">
+                    @Html.ActionLink("Категорія", "Index", new { sortOrder = ViewBag.CategorySortParm })
+                </th>
+                <th style="color: mediumblue">
+                    @Html.ActionLink("Виробник", "Index", new { sortOrder = ViewBag.ProducerSortParm })
+                </th>
+                <th style="color: mediumblue">
+                    @Html.ActionLink("Модель", "Index", new { sortOrder = ViewBag.ModelSortParm })
+                </th>
+                <th style="color: mediumblue">
+                    @Html.ActionLink("Ціна", "Index", new { sortOrder = ViewBag.PriceSortParm })
+                </th>
+                <th style="color: mediumblue">
+                    @Html.ActionLink("Одиниць в наявності", "Index", new { sortOrder = ViewBag.QuantitySortParm })
+                </th>
+                <th style="color: cornflowerblue">
+                    @Html.Label("Замовлена кількість")
+                </th>
+
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Consignment.Item.Category.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Consignment.Item.Producer.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Consignment.Item.Model)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.TextBox("quantities")
+                </td>
+                <td>
+                    @if (User.IsInRole("Seller") || User.IsInRole("Manager"))
+                {
+                    @Html.ActionLink("Запит на склад |", "CreateRequest", new { id = item.StorehouseItemId })
+            }
+                    @if (User.IsInRole("Manager"))
+                {
+                    @Html.ActionLink("Змінити дані |", "Edit", new { id = item.StorehouseItemId })
+            }
+                    @Html.ActionLink("Деталі товару", "Details", new { id = item.StorehouseItemId })
+                </td>
+            </tr>
+    }
+
+        </table>
+
+        <div style="position: fixed; top: 90%; ">
+            <input type="submit" value="Зберегти" style="margin-left: 1200px; background-color: blue; width: 100px; font-size: 18px; color: chartreuse" class="btn btn-default" />
+        </div>
+    </div>
+}

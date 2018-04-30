@@ -21,14 +21,6 @@
           <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="CategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
-        <EntityType Name="CategoryItems">
-          <Key>
-            <PropertyRef Name="CategItemId" />
-          </Key>
-          <Property Name="CategItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CategoryId" Type="int" Nullable="false" />
-          <Property Name="ItemId" Type="int" Nullable="false" />
-        </EntityType>
         <EntityType Name="Checks">
           <Key>
             <PropertyRef Name="CheckId" />
@@ -129,6 +121,7 @@
           <Property Name="Material" Type="nvarchar" MaxLength="50" />
           <Property Name="Description" Type="nvarchar" MaxLength="300" />
           <Property Name="ReleaseDate" Type="int" />
+          <Property Name="CategoryId" Type="int" />
         </EntityType>
         <EntityType Name="Producers">
           <Key>
@@ -192,6 +185,18 @@
           <Property Name="version" Type="int" />
           <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
+        <Association Name="FK_Items_Categories">
+          <End Role="Categories" Type="Self.Categories" Multiplicity="0..1" />
+          <End Role="Items" Type="Self.Items" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categories">
+              <PropertyRef Name="CategoryId" />
+            </Principal>
+            <Dependent Role="Items">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="R_13">
           <End Role="Contracts" Type="Self.Contracts" Multiplicity="1" />
           <End Role="Employees" Type="Self.Employees" Multiplicity="*" />
@@ -261,30 +266,6 @@
             </Principal>
             <Dependent Role="Checks">
               <PropertyRef Name="CustomerId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_34">
-          <End Role="Categories" Type="Self.Categories" Multiplicity="1" />
-          <End Role="CategoryItems" Type="Self.CategoryItems" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Categories">
-              <PropertyRef Name="CategoryId" />
-            </Principal>
-            <Dependent Role="CategoryItems">
-              <PropertyRef Name="CategoryId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_36">
-          <End Role="Items" Type="Self.Items" Multiplicity="1" />
-          <End Role="CategoryItems" Type="Self.CategoryItems" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Items">
-              <PropertyRef Name="ItemId" />
-            </Principal>
-            <Dependent Role="CategoryItems">
-              <PropertyRef Name="ItemId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -435,7 +416,6 @@
         <EntityContainer Name="ElectronicShopModelStoreContainer">
           <EntitySet Name="Adresses" EntityType="Self.Adresses" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="CategoryItems" EntityType="Self.CategoryItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Checks" EntityType="Self.Checks" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Cities" EntityType="Self.Cities" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Consignments" EntityType="Self.Consignments" Schema="dbo" store:Type="Tables" />
@@ -454,6 +434,10 @@
           <EntitySet Name="StorehouseItems" EntityType="Self.StorehouseItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Storehouses" EntityType="Self.Storehouses" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Items_Categories" Association="Self.FK_Items_Categories">
+            <End Role="Categories" EntitySet="Categories" />
+            <End Role="Items" EntitySet="Items" />
+          </AssociationSet>
           <AssociationSet Name="R_13" Association="Self.R_13">
             <End Role="Contracts" EntitySet="Contracts" />
             <End Role="Employees" EntitySet="Employees" />
@@ -477,14 +461,6 @@
           <AssociationSet Name="R_32" Association="Self.R_32">
             <End Role="Customers" EntitySet="Customers" />
             <End Role="Checks" EntitySet="Checks" />
-          </AssociationSet>
-          <AssociationSet Name="R_34" Association="Self.R_34">
-            <End Role="Categories" EntitySet="Categories" />
-            <End Role="CategoryItems" EntitySet="CategoryItems" />
-          </AssociationSet>
-          <AssociationSet Name="R_36" Association="Self.R_36">
-            <End Role="Items" EntitySet="Items" />
-            <End Role="CategoryItems" EntitySet="CategoryItems" />
           </AssociationSet>
           <AssociationSet Name="R_37" Association="Self.R_37">
             <End Role="Employees" EntitySet="Employees" />
@@ -557,17 +533,7 @@
           </Key>
           <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="CategoryItems" Relationship="Self.R_34" FromRole="Categories" ToRole="CategoryItems" />
-        </EntityType>
-        <EntityType Name="CategoryItem">
-          <Key>
-            <PropertyRef Name="CategItemId" />
-          </Key>
-          <Property Name="CategItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CategoryId" Type="Int32" Nullable="false" />
-          <Property Name="ItemId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Category" Relationship="Self.R_34" FromRole="CategoryItems" ToRole="Categories" />
-          <NavigationProperty Name="Item" Relationship="Self.R_36" FromRole="CategoryItems" ToRole="Items" />
+          <NavigationProperty Name="Items" Relationship="Self.FK_Items_Categories" FromRole="Categories" ToRole="Items" />
         </EntityType>
         <EntityType Name="Check">
           <Key>
@@ -688,7 +654,8 @@
           <Property Name="Material" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="ReleaseDate" Type="Int32" />
-          <NavigationProperty Name="CategoryItems" Relationship="Self.R_36" FromRole="Items" ToRole="CategoryItems" />
+          <Property Name="CategoryId" Type="Int32" />
+          <NavigationProperty Name="Category" Relationship="Self.FK_Items_Categories" FromRole="Items" ToRole="Categories" />
           <NavigationProperty Name="Consignments" Relationship="Self.R_50" FromRole="Items" ToRole="Consignments" />
           <NavigationProperty Name="Producer" Relationship="Self.R_25" FromRole="Items" ToRole="Producers" />
         </EntityType>
@@ -791,27 +758,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="R_34">
-          <End Role="Categories" Type="Self.Category" Multiplicity="1" />
-          <End Role="CategoryItems" Type="Self.CategoryItem" Multiplicity="*" />
+        <Association Name="FK_Items_Categories">
+          <End Role="Categories" Type="Self.Category" Multiplicity="0..1" />
+          <End Role="Items" Type="Self.Item" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Categories">
               <PropertyRef Name="CategoryId" />
             </Principal>
-            <Dependent Role="CategoryItems">
+            <Dependent Role="Items">
               <PropertyRef Name="CategoryId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_36">
-          <End Role="Items" Type="Self.Item" Multiplicity="1" />
-          <End Role="CategoryItems" Type="Self.CategoryItem" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Items">
-              <PropertyRef Name="ItemId" />
-            </Principal>
-            <Dependent Role="CategoryItems">
-              <PropertyRef Name="ItemId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1007,10 +962,9 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="ShopContext" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="ElectronicShopEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Adresses" EntityType="Self.Adress" />
           <EntitySet Name="Categories" EntityType="Self.Category" />
-          <EntitySet Name="CategoryItems" EntityType="Self.CategoryItem" />
           <EntitySet Name="Checks" EntityType="Self.Check" />
           <EntitySet Name="Cities" EntityType="Self.City" />
           <EntitySet Name="Consignments" EntityType="Self.Consignment" />
@@ -1037,13 +991,9 @@
             <End Role="Adresses" EntitySet="Adresses" />
             <End Role="Storehouses" EntitySet="Storehouses" />
           </AssociationSet>
-          <AssociationSet Name="R_34" Association="Self.R_34">
+          <AssociationSet Name="FK_Items_Categories" Association="Self.FK_Items_Categories">
             <End Role="Categories" EntitySet="Categories" />
-            <End Role="CategoryItems" EntitySet="CategoryItems" />
-          </AssociationSet>
-          <AssociationSet Name="R_36" Association="Self.R_36">
             <End Role="Items" EntitySet="Items" />
-            <End Role="CategoryItems" EntitySet="CategoryItems" />
           </AssociationSet>
           <AssociationSet Name="R_32" Association="Self.R_32">
             <End Role="Customers" EntitySet="Customers" />
@@ -1115,7 +1065,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="ElectronicShopModelStoreContainer" CdmEntityContainer="ShopContext">
+        <EntityContainerMapping StorageEntityContainer="ElectronicShopModelStoreContainer" CdmEntityContainer="ElectronicShopEntities">
           <EntitySetMapping Name="Adresses">
             <EntityTypeMapping TypeName="ElectronicShopModel.Adress">
               <MappingFragment StoreEntitySet="Adresses">
@@ -1131,15 +1081,6 @@
               <MappingFragment StoreEntitySet="Categories">
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CategoryItems">
-            <EntityTypeMapping TypeName="ElectronicShopModel.CategoryItem">
-              <MappingFragment StoreEntitySet="CategoryItems">
-                <ScalarProperty Name="CategItemId" ColumnName="CategItemId" />
-                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
-                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1252,6 +1193,7 @@
                 <ScalarProperty Name="Material" ColumnName="Material" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="ReleaseDate" ColumnName="ReleaseDate" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
