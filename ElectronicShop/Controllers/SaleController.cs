@@ -79,8 +79,8 @@ namespace ElectronicShop.Controllers
         [HttpPost]
         public ActionResult Index(List<string> quantities, string name, string surname)
         {
-           var customer = db.Customers.FirstOrDefault(x => x.Name == name
-                                                                 && x.Surname == surname);
+            var customer = db.Customers.FirstOrDefault(x => x.Name == name
+                                                                  && x.Surname == surname);
 
             var idEmp = Convert.ToInt32(HttpContext.User.Identity.Name);
             var items = quantities.ToArray();
@@ -102,7 +102,7 @@ namespace ElectronicShop.Controllers
             var check = new Check
             {
                 EmployeeId = idEmp,
-                CheckDate = new DateTime().ToLocalTime(),
+                CheckDate = theDate,
                 TotalPrice = 1,
                 Customer = customer
             };
@@ -169,20 +169,23 @@ namespace ElectronicShop.Controllers
 
                 counter++;
             }
-            
+
             if (total == 0)
             {
                 ViewBag.ErrorMessage = "Товари не вибрано";
                 return View(storehouseItems);
             }
 
-            if (customer != null && customer.CustomerDiscount.DiscountValue >0)
+            if (customer?.CustomerDiscount != null)
             {
-                check.TotalPrice = (double)total - (double)total / 100 * customer.CustomerDiscount.DiscountValue;
+                if (customer.CustomerDiscount.DiscountValue > 0)
+                {
+                    check.TotalPrice = total - total / 100 * customer.CustomerDiscount.DiscountValue;
+                }
             }
             else
             {
-                check.TotalPrice = (double) total;
+                check.TotalPrice = (double)total;
             }
             db.Checks.AddOrUpdate(check);
             db.SaveChanges();

@@ -22,20 +22,23 @@ namespace ElectronicShop
             this.Checks = new HashSet<Check>();
         }
 
-        [DisplayName("Прізвище")]
+        [DisplayName("Прізвище покупця")]
 
         public string Surname { get; set; }
 
         [DisplayName("Ім'я")]
         public string Name { get; set; }
+        [DisplayName("Дата реєстрації")]
         public System.DateTime RegistrationDate { get; set; }
         [DisplayName("Телефон")]
         public string Phone { get; set; }
+        [DisplayName("Тип знижки")]
         public Nullable<int> CustDiscId { get; set; }
         public int CustomerId { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Check> Checks { get; set; }
+        [DisplayName("Знижка (%)")]
         public virtual CustomerDiscount CustomerDiscount { get; set; }
     }
 }

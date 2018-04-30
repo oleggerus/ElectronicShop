@@ -24,6 +24,12 @@
                     {
                         <li>@Html.ActionLink("Оформлення продажі", "Index", "Sale")</li>
                     }
+                    @if (User.IsInRole("Manager"))
+                    {
+                        <li>@Html.ActionLink("Дані про продажі", "Index", "Checks")</li>
+                        <li>@Html.ActionLink("Дані про працівників", "Index", "Employees")</li>
+                        <li>@Html.ActionLink("Дані про покупців", "Index", "Customers")</li>
+                    }
 
                     </ul>
                 <ul class="nav navbar-nav navbar-right">

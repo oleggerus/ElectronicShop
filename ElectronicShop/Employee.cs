@@ -22,17 +22,20 @@ namespace ElectronicShop
             this.Checks = new HashSet<Check>();
             this.StorehouseEmployees = new HashSet<StorehouseEmployee>();
         }
-        [DisplayName("Прізвище")]
+        [DisplayName("Прізвище працівника")]
         public string Surname { get; set; }
         [DisplayName("Ім'я")]
         public string Name { get; set; }
+        [DisplayName("Дата реєстрації")]
         public System.DateTime EnterDate { get; set; }
         [DisplayName("Телефон")]
         public string PhoneNumber { get; set; }
         [DisplayName("Пароль")]
         public string Password { get; set; }
         public int EmployeeId { get; set; }
+        [DisplayName("Тип контракту")]
         public int ContractId { get; set; }
+        [DisplayName("Роль")]
         public int RoleId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

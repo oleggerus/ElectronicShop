@@ -1,0 +1,49 @@
+﻿@model IEnumerable<ElectronicShop.Check>
+
+<h2>Дані про продажі</h2>
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalPrice)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CheckDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Customer.Surname)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Employee.Surname)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Employee.Contract.Salary)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.TotalPrice)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CheckDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Customer.Surname)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Employee.Surname)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Employee.Contract.Salary)
+        </td>
+        <td>
+            @Html.ActionLink("Деталі", "Details", new { id = item.CheckId })
+        </td>
+    </tr>
+}
+
+</table>
